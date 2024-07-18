@@ -1,0 +1,341 @@
+Cloud Engineer Practical Path
+
+========================================
+Kubernetes - Multi-Container Pods
+
+Name one multi-container pod pattern
+
+	****sidecar****
+
+How many containers does the Jupiter pod have?
+
+	****4****(~kubectl get pods)
+
+The Jupiter service exposes two pods a Python pod and PHP pod. They are exposed on two different ports, the Python pod is exposed on port 5000. What port is the PHP pod exposed on?
+
+	****80****(~kubectl describe pods)
+
+Use cURL to access the PHP pod of the Jupiter service at <cluster IP>:<pod_port>. Follow the instructions given in the output to obtain the token.
+
+	****Long String*****(kubectl get pods -o wide)PHP=10.1.1.15:80 Python=10.1.1.15:5000
+
+=======================================
+Kubernetes - Pods and Services
+
+A service routes traffic to pods based on selectors and which of the following?
+
+	****Labels****
+
+Viewing the pod’s YAML file, which port in the 'neptune' pod exposes the ‘nginx’ container internally?
+
+	****Port 8127****(~cat neptune-pod.yaml)
+
+Use kubectl to view the service. Which node port maps to the port in the previous question?
+
+	****30001****(kubectl get service)(Each port has a mapping eg: 8127:30001
+
+Use cURL to access the 'nginx' container. What is the token?
+	****(~curl 10.152.183.151:8127)****
+
+What is the original 'key: value' pair for the selector in the 'my-service' service’s YAML file?
+
+	****run: find-neptune****(~cat service.yaml)(Do an ls 1st, see what files are there and pwd for which directory you are in)
+
+What 'key: value' pair is the label assigned to the ‘my-nginx-app’ pod?
+
+	****run: my-nginx-app****(same as above)
+
+Which flag can be passed to kubectl's 'apply' command to specify that the resource configuration is contained in a file?
+
+	****-f****(Need to use text editor like Vi or Vim as nano has C&P issues)
+
+Using cURL, what is the token in the 'nginx2' container application within the 'my-nginx'app' pod?
+
+	****kubectl describe pod my-nginx-app(This will give you details of pod and IP&Port numbers)
+		kubectl edit -f service.yaml (Do an ls command and check for yaml files, service.yaml is master file to edit)
+		cat service.yaml (Use this to varify changes)
+			curl 10.152.183.68:8200 (use this command for specific IP&Port to connect to pod)
+
+
+To exit Vim without saving changes:
+	Switch to command mode by pressing the Esc key.
+	Press : (colon) to open the prompt bar in the bottom left corner of the window.
+	Type q! after the colon and hit Enter to exit without saving the changes.
+
+
+Open a new or existing file with vim filename .
+	Type i to switch into insert mode so that you can start editing the file.
+	Enter or modify the text with your file.
+	Once you're done, press the escape key Esc to get out of insert mode and back to command mode.
+	Type :wq to save and exit your file.
+
+==================================
+Kubernetes - Volumes
+
+Apply the deployment with kubectl apply -f deployment.yaml.
+
+What is the requested capacity of the mariadb PV?
+
+	****4gi****(~ls - cat deployment.yaml)
+
+What is the storageclass name of the mariadb PVC?
+
+	****local-storage****(Same as above)
+
+What is the path of the PV on the host?
+
+	****/mnt/mariadb****(Same as above)
+
+In the directory from the previous question, how many sub-directories are there?
+
+	****3****
+
+Show contents of a database table using kubectl exec <pod name> -- mysql -uroot -e "use immersivelabs; select * from kubernetes limit 20;"
+
+	 exec  mariadb-deployment-775544594-896d2 -- mysql -uroot -e "use immersivelabs; sele
+ct * from kubernetes limit 20;" ****
+
+What are the last six characters of the token value for #19 inside the 'Kubernetes' table?
+
+	****56cd4e****
+
+Delete the pod, and then wait for the replacement pod to spawn automatically.
+
+ kubectl delete pod mariadb-deployment-775544594-ftqdm
+
+What is the token value for #20 after pod deletion?
+
+	****33171e****(~ get pods and query the db using the command above with the new pod name)
+
+sudo rm -rf /mnt/mariadb
+What is the error code returned for a database query?
+
+	****1049****
+
+=======================================
+Kubernetes - Secrets
+
+What encoding scheme is used by default when storing the values of secrets?
+
+	****Base64****(Read briefing)
+
+In a YAML file defining a secret, what field can be used in place of 'data' to enable secret values to be written in plaintext?
+
+	****stringdata****
+
+What field specifies the name of the secret to be mounted to a pod as a volume?
+
+	****secret.secretName****
+
+What kind of tokens containing credentials to grant API access are automatically mounted to pods upon their creation?
+
+	****Service account tokens****
+
+Use Kubectl to read the ‘creds’ secret in the ‘secret-ns’ namespace. In plaintext (decoded), what is the password?
+
+	****24cd2a****(~kubectl edit secrets creds)
+
+After successfully completing the previous task, a token will be printed on the command line, what is the token you receive?
+Set the namespace context to 'secret-ns':
+	kubectl config set-context --current --namespace=secret-ns
+
+Create a file named my-first-secret.yaml and open it for editing:
+touch my-first-secret.yaml
+nano my-first-secret.yaml
+
+In the editor, add the following YAML content to the my-first-secret.yaml file:
+		apiVersion: v1
+		kind: Secret
+		metadata:
+  		name: my-first-secret
+		type: Opaque
+		data:
+  		user: S3ViaWU=  # Base64-encoded value of 'Kubie'
+  		best-friend: RGF2ZQ==  # Base64-encoded value of 'Dave'
+
+Save the changes and exit the editor.
+Apply the secret configuration using the YAML file:
+		kubectl apply -f my-first-secret.yaml
+
+	****753bb6****
+
+What token is printed by the 'mount-printer' pod? This can be viewed in the pod’s logs. Answer in plaintext.
+
+	****
+
+
+=============================================
+Kubernetes - Workload Resources
+
+In a ReplicaSet’s YAML file they create pods based on what?
+
+	****pod template****
+
+Which of these statements is true?
+
+	****A PV Provisioner can assign storage to StatefulSet pods****
+
+Query the ReplicaSets. How many asteroid pods are currently desired?
+
+	****0****(~kubectl get replicasets)
+
+What is the name of the image used in the asteroids deployment?
+
+	****my-asteroid-image****(kubectl describe deployments)
+
+What flag do you pass to 'kubectl scale' to indicate the number of pods you want to be running?
+
+	****--replicas****
+
+Increase the desired number of pods to ONE, wait until it is ready, and use cURL to access the asteroid container. What is the token?
+
+	kubectl get replicasets(This will give you the name of the replicasets in your cluster)
+		kubectl edit replicasets(This will open Vim, type 'I' for insert and navigate to replicas, under spec, change to '1' esc, :wq enter.
+		 or kubectl scale deployment/asteroid-deployment --replicas=1
+			kubectl describe pods(Search file for IP and Port, (2nd container)
+				curl 10.1.102.1:8080(In this case IP and port are as described)
+		Good job, you scaled the deployment and connected to the Nginx container!</p>
+		<p>If your token does not appear, please wait until all pods are running.</p>
+		<p>Your token is... 
+
+There is a StatefulSet running on the cluster. Query its configuration. What label is given to the pods it creates?
+
+	****run=nginx2****(~kubectl describe pod my-statefulset-1)
+
+What flag can be passed when removing pods, to only delete those with a certain label?
+
+	****--selector****
+
+Return to the original terminal and delete the StatefulSet's pod
+
+	kubectl delete pod my-statefulset-0
+		kubectl get pods -w
+
+Which pod is restarted last?
+
+	****my-statefulset-2****
+
+What was the status of the 'my-statefulset-0' pod when the scheduler began restarting the 'my-statefulset-1' pod?
+
+	****running****
+
+=======================================================
+Kubernetes - Namespaces and Network Policies
+
+List the namespaces defined on the cluster.
+How many namespaces with the prefix metrolio-* exist on the cluster
+
+	****5****(~kubectl get namespaces)
+
+Look at the service resources. Identify the nodePort used to expose pods with the label app=test-app.
+What NodePort is the test-app-service available on?
+
+	****32285****(~)
+
+List the network policies that have been deployed to the cluster.
+What is the name of the network policy that has been applied to the metrolio-dev-1 cluster?
+
+	****metrolio-dev-1-deny-ingress****(~kubectl get networkpolicies --all-namespaces)
+
+Create a new namespace called 'metrolio-new-namespace'. What is the output of the command you used?
+
+	****namespace/metrolio-new-namespace created****(~kubectl create namespace metrolio-new-namespace)
+
+Update the network policy found in the web-app-ingress.yaml file to permit access from the Desktop instance IP address to any pod with the label app=test-app. Using Chrome on the Desktop application, access the pod at http://<Kubernetes Node>:<nodePort>. What is the token provided?
+	kubectl get all --all-namespaces
+	
+
+
+
+
+****
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: web-app-ingress
+  namespace: metrolio-dev-1
+spec:
+  podSelector:
+    matchLabels:
+app: test-app
+  ingress:
+  - from:
+    - ipBlock:
+cidr: 11.106.12.251/32
+ipBlock:
+cidr: 192.168.235.196/32
+    ports:
+- protocol: TCP
+port: 32285
+protocol: TCP
+port: 80
+  policyTypes:
+  - Ingress
+
+kubectl apply -f web-app-ingress.yaml
+
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+name: web-app-ingress
+namespace: metrolio-dev-1
+spec:
+podSelector:
+matchLabels:
+app: test-app
+ingress:
+- from:
+- ipBlock:
+cidr: 11.96.255.240/24
+ipBlock:
+cidr: 10.102.101.203/24
+ipBlock:
+cidr: 0.0.0.0/32
+ports:
+- protocol: TCP
+port: 32285
+protocol: TCP
+port: 80
+policyTypes:
+- Ingress
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

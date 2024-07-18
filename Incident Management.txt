@@ -1,0 +1,404 @@
+Introduction to incident Response
+
+oleid analyses OLE files to detect specific characteristics usually found in malicious files.
+olevba extracts and analyses VBA Macro source code from MS Office documents (OLE and OpenXML).
+mraptor detects malicious VBA Macros.
+msodde detects and extracts DDE/DDEAUTO links from MS Office documents, RTF and CSV.
+pyxswf detects, extracts and analyses Flash objects (SWF) that may be embedded in files such as MS Office documents (e.g. Word, Excel) and RTF, which is especially useful for malware analysis.
+oleobj extracts embedded objects from OLE files.
+rtfobj extracts embedded objects from RTF files.
+
+Introduction to malicious Documents
+https://github.com/decalage2/oletools/blob/master/cheatsheet/oletools_cheatsheet.pdf
+
+What is the name of the file where macros are stored in an XML based Microsoft Office document?
+
+	****vbaProject.bin**** (detailed in briefing) (~oleid sample5.xls)
+
+Run mraptor against the files within the malware directory. How many files are identified as suspicious?
+
+	****4**** (~mraptor sample1.doc.......)
+
+Run olevba against the sample1.doc file with the deobfuscate flag set. What is the domain which is identified as an Indicator of Compromise (IOC)?
+
+	****pastebin.com**** (~olevba --deobf sample1.doc)(--deobf is the deobfuscate flag)
+
+~~~~~~~Any file extension with x at the end such as .docx is a zipped file~~~~~~
+Unzip sample7.docx saving the output to a new directory. How many executables (.exe) are referenced in the document.xml?
+
+	****2**** (unzip sample7.docx -d /home/iml-user/)
+
+===================
+Malicious Documents: VBA Analysis
+
+Analysing sample1.doc, what is the name of the Sub procedure called by AutoOpen?
+
+	****Cdsgfsdf****(olevba sample1.doc)
+
+Analysing sample1.doc, what is the name of the created .vbs file?
+
+	****JGuigbjbff3f****(~olevba --deobf sample1.doc)
+
+Analysing sample2.xls, what is the URL hidden in the VBA that isn't www.google.com?
+
+	****http://eholidays.mooo.com/common.php**** (~olevba --reveal sample2.xls >output.txt) 
+
+Analysing sample2.xls, what is the name of the function used to decode and save the Base64 encoded values?
+
+	****Base64ToFile****(~olevba --reveal sample2.xls >output.txt)(Open search in document and search)
+
+Analysing sample2.xls, what tool does the VBA script use to execute the file whose path is stored in the Esfile variable?
+
+	****wscript.exe**** (Same as above)
+
+==========================================================
+Malicious Documents: Dropper Analysis
+
+Examining the provided document, what function does olevba flag as suspicious for its use in string obfuscation?
+
+	****Chr****(~olevba --reveal sample.docm >output.txt)(Search in doc for 'suspicious')
+
+Examining the provided document, the deobfuscation routine modifies each number by subtracting a value. What is this value?
+
+	****282****
+
+Examining the deobfuscated PowerShell script, what is the name of the file used to store the response of the first download request?
+
+	****SearchI32.js****
+		~vim deobfuscate.py 
+			Add this to the script
+			# Function c(a)
+def sub_char(number):
+    # -- Implementation required
+    return chr(int(number) - 282)
+ 
+ 
+# Sub datyav(a, xyugt)
+def transform_to_chars(numbers):
+    # -- Implementation required
+    return [sub_char(n) for n in numbers if len(numbers) > 0]
+				python3 deobfuscate.py sample.docm
+
+Examining the deobfuscated PowerShell script, identify one of the two domain names from which the script downloads a file.
+
+	****ami.diminishedvaluewashington.com****(There are 2 domains, pick either)
+	
+=============================================================================
+IR: Ep.1 – Suspicious Email
+
+What is the malicious actor’s mail server IP address?
+
+	****52.214.177.125****(cat xxxxx.msg)
+
+What is the malicious actor’s fully qualified domain name (FQDN) used in the email?
+
+	****mail.iml-bank.info(same as above)(FQDN is anything after the @ in an email address)
+
+What is the malicious actor’s apparent email address?
+
+	****postmaster@iml-bank.info****
+
+=============================================================
+IR Ep:2 Prior Attack
+
+Analyze the MS Office file using oletools.
+Using oletools, extract the email and the attachment.
+Using a Python script or a manual deobfuscation method, get the binary from the VBA script.
+
+What is the name of the malicious attachment?
+
+	****salary_ranges.docm****(python3 oledump.py -s 8 Salary-Ranges.msg)Make sure all .py files are in the same directory
+
+What are the last 6 characters of the MD5 checksum of the malicious attachment?
+
+	****637b7d****(~md5sum file.out)
+You can get an answer for the first question using following commands:
+	python3 oledump.py -p plugin_msg.py Salary-Ranges.msg
+	or
+		python3 oledump.py -s a Salary-Ranges.msg
+		or
+			python3 oledump.py -s 3 Salary-Ranges.msg
+				To extract the attachment from the .msg file you have to dump it (-d) from section 4 (-s 4) and redirect output to a file:
+					python3 oledump.py -d -s 4 Salary-Ranges.msg > file.out
+						To get name of the file hidden in the exctracted attachment you can simply run olevba and attachemnt name as an argument:
+							olevba file.out
+								In the output you’ll be able to easly find the file name.
+
+What is the filename that the malware executable uses?
+
+	****file.exe****(~olevba file.out)
+
+What are the last 6 characters of the MD5 checksum of the malware executable?
+
+	****2017f0****(~md5sum hidden.file) Follow the steps below
+		~nano script.py
+with open('code.vba', 'r') as file:
+    kod = file.read().split("\n")
+hex_kod = []
+for k in kod:
+    if "WriteBytes" in k:
+        a = k.split("WriteBytes objFile, ")[-1].strip('"').strip("Sub WriteBytes(objFile, strBytes)")
+        if a == "":
+            continue
+        hex_kod.append(a)
+ 
+def WriteBytes(objFile, strBytes):
+    aNumbers = strBytes.split()
+    for iIter in range(len(aNumbers)):
+        objFile.write(chr(int(aNumbers[iIter])))
+         
+with open("hidden.file", 'w') as file:
+    for hx in hex_kod:
+        WriteBytes(file, hx)
+
+What is the FQDN of the attacker’s infrastructure that the malware uses?
+
+	****intranet.iml-bank.info****(~strings hidden.file | more)(Manually search for anything that looks like a domain name)
+
+===============================================================
+IR: Ep.3 – Compromised Host
+
+Identify and analyze further IOCs.
+Identify and analyze the malware file.
+
+The malware persists through reboots. What is the registry key value’s name that results in the malware executing automatically?
+
+	****
+
+Identify the filename of the malware currently running.
+
+	****qaAaMdhlzcRE.exe****(Open Proccessmonitor and search for 'runonce'
+
+The attacker has deployed the Mimikatz tool to attempt to capture plaintext passwords. What is the filename of the Mimikatz executable on disk?
+
+	****d41d8cd98f00b204e9800998ecf8427e.exe****(Open Powershell, Get-ChildItem -Path C:\ -Filter *.exe -Recurse | Select-String -Pattern "mimikatz"(Wait for command to complete!!)
+This command uses the Get-ChildItem cmdlet with the -Path parameter set to "C:" to search in the system drive, the -Filter parameter set to "*.exe" to include only executable files, and the -Recurse parameter to search in all subdirectories recursively. The output is then piped to the Select-String cmdlet, which searches for the string "mimikatz".
+Wait for the command to complete. It will display a list of matches where the string "mimikatz" is found within executable files, including the file name and line number.
+
+==================================================================
+Clipboard Data Theft
+
+True or false: clipboard data theft is a collection technique used to steal the contents of a user’s clipboard.
+
+	****True****
+
+Obtain the clipboard data and display it in the terminal. What bank is Greg using?
+
+	****CornerBank Inc****(~Get-Clipboard)(Do not C&P in the Powershell screen)
+
+True or false: clipboard data theft is a technique solely used in malware.
+
+	****False****
+
+What OTP was Sammy given when she wanted to transfer £50,500 to her business account?
+
+	****IFeelLikeNakatomiTonight2****
+
+What is the token shown on Greg’s transaction?
+
+	****bf4ab02121****
+
+===================================
+Persistence – Accessibility Features: Investigation
+
+Using the accessibility features, find a way to work out which feature has been tampered with.
+	Interrogate the tampered file in order to answer the questions.
+		Lock the workstation and trigger the persistence to answer the last question
+
+Who is the default owner of the listed accessibility feature binaries?
+
+	****TrustedInstaller****(cd C:\Windows\System32 , icacls Magnify.exe , or google!)(had to edit toolbar to open CMD in win server)
+
+Which accessibility feature has been tampered with?
+
+	****Magnify.exe****
+
+What is the original file name of the new binary that replaced the accessibility feature?
+
+	****CMD.exe****(Search for Magnify.exe, right click on icon and check details)
+
+What user account does the accessibility feature grant to the attacker if the feature is trigger from the lock screen of the lab?
+
+	****System****(~rundll32.exe user32.dll,LockWorkStation, This will lock terminal, click on 'Ease of Access' then open Magnifyer, this will open CMD Prompt, do a whoami, this will give answer)
+
+===================================================
+Exfiltration Over Alternative Protocol
+
+Analyze the network_activity.pcap file located on the Desktop
+
+What is the IP address of the Samba server used to back up files?
+
+	****172.17.0.2****(In PCAP search bar, search SMB2, search for backup entries)
+
+How many CSV files were downloaded from the Samba server
+
+	****9****(File > Export Objects > SMB)
+
+What is the IP address of the host machine used to download the backup files?
+
+	****172.16.120.128****(Analyse PCAP file with SMB2 as filter)
+
+What protocol was used to exfiltrate data to the external server?
+ 	****FTP****(Statistics > Protocol Hierarchy for a summary of the protocols used)
+
+What is the IP address of the external server?
+
+	****34.241.109.23****(Use FTP filter and check requests)
+
+What username was used to authenticate to the external server?
+
+	****Bob****(Same as above)
+
+What password was used to authenticate to the external server?
+
+	****MyExfilDataServer****(Same as above)
+
+What file name was used to transfer the compressed CSV files to the external server?
+
+	****background_images.zip****(Check for anything within FTP filter with a valid file extension)
+
+==============================================
+Application Shimming
+
+Look at the registry keys that have been created using regedit.
+Find the SDB file linked to this shim.
+Find the DLL that is injected into the process and find the malicious domain.
+
+What is the affected executable?
+
+	****acrord32.exe****(
+
+What is the name of the SDB file?
+
+	****Importantfix.sdb****(Search for .SDB in system32 folder) 
+
+What is the full path and file name of the DLL that has been injected?
+
+	****C:\Windows\System32\apphelp.dll****(Search registry for apphelp.dll, drag and drop into PEstudio for analysis, Path is at top of page)
+
+What is the full malicious URL the DLL tries to call?
+
+	****http://www.remoteIT.com/downloadpage/remoteHelp.hta****(Open the smaller of the 2 apphelp.dll(9k) and save to documents folder, drag and drop this into PEstudio and analyse data)
+
+=============================================
+ZWASP Phishing Vulnerability in Office 365
+
+Open up the Thunderbird application from the Desktop.
+Read the emails contained within the inbox.
+Analyze URLs and answer the questions.
+
+What ZWSP was proven to work in phishing attacks?
+
+	****Zero-Width Non-Joiner****(Read through the briefing)
+
+How does the link in the first email appear when viewed via the browser?
+
+	****http://www.xn--imlb-076a/#8204;an%E2%80%8Ck/log%E2%80%8Cin.c%E2%80%8Com****(Open in new tab and C&P Encoded URL)
+
+What is the actual web address it links you to? See the second email.
+
+	****http://www.imlbank/login.com****
+
+===========================================
+RAT Attacks
+
+Identify the C2 traffic in the PCAP file.
+Extract the encoded and encrypted data from the PCAP.
+Use CyberChef to decode and decrypt the network traffic.
+Identify attacker commands and interactions.
+
+What is the IP address of the victim machine that starts the connection?
+
+	****192.168.212.136****(Analyse the PCAP file)
+
+What is the destination port for the DarkComet connection?
+
+	****1604****(Look in middle pane at Src and Dst ports)
+
+What encoding does the DarkComet protocol use in the network traffic?
+ip.addr == 192.168.212.136
+
+	****Hex****(Found in briefing)
+
+What encryption does the DarkComet protocol use in the network traffic?
+
+	****RC4****(Same as above)
+
+What is the token that can be found in the decrypted traffic?
+
+	****cf8ae1****
+To perform the decryption, use the module with the name of the encryption type (a previous question). Set the input option in this to match the encoding type (another previous question), and leave the output as Latin1. The passphrase is in the info section (which I believe is one of the defaults for this RAT), and the format of this passphrase can be left as UTF8.
+Also, change the stream values from 1-14
+
+==============================================
+Parsing PST
+
+Parse the PST file using pffexport.
+Identify the inbox for SHARRIS1 (non-privileged).
+Answer the questions.
+
+	Use pffexport steven_harris.pst, this will output all the files, then move all files into /home/iml-user
+
+Using the inbox from the task list, what is the md5sum of the attachment in Message00004?
+
+	****a586daafce5c9816c2372dd2fecb12cd****(Rename attatchment to file1.XLS and drag it to desktop, ~cd Desktop, md5sum file1.XLS)
+
+Using the inbox from question one, what is the email address for the recipient in Message00014?
+
+	****DL-GA-all_enron_worldwide2@ENRON.com****(Manually search through files)
+
+Using the inbox from the task list, what is the subject line for Message00005?
+
+	****Sun Devil Mtg. - Cost allocation and Rate design****
+
+============================================================
+Malicious Documents: OLE tools
+
+
+Use oletools and unzip to analyse each document.
+Using sample1.doc, what is the ID of the paste that the document attempts to download?
+
+	****VTd9HVkz****(olevba --deobf sample1.doc)(Examine the string after = in the URL)
+
+Using sample2.pptx, what is the full URI to the .inf file that is requested as part of the exploit?
+
+	****\\94.185.85.122\public\slides.inf****(Open sample2.pptx and navigate to 'Embeddings'this is where the URI is)
+
+Using sample5.xls, what is the size of the _VBA_PROJECT stream?
+
+	****3126****(~vbadir sample5.xls)(This will give you the directory and the associated file sizes)Under,Root Entry,_VBA_Project,VBA, _Vba_Project
+
+Using sample6.doc, identify one of the strings flagged by mraptor as suspicious.
+
+	****AutoOpen****(~mraptor -m sample6.doc)(-m flag will show matching suspicious strings in file)
+
+Using sample7.docx, what is the full URI to the PowerShell script that is executed by the document?
+
+	****http://evilserver.immersivelabs/pp.ps1****(Extract sample7.docx, Open sample7.docx, right click and view document.xml file)
+
+Using the mraptor tool in oletools, how many of the samples are detected as 'SUSPICIOUS'? Express your answer in numeric form, e.g. 9.
+
+	****4****(Use mraptor against all the sample files)
+
+=====================================================
+
+Run oleid against the files within the malware directory. Which file displays the Author information as 'jonhn'?
+
+	****sample5.xls**** 
+
+A pre-2007 Microsoft Word document (.doc) contains three different macros. How many storage locations will these macros be stored in?
+
+	****1**** (detailed in briefing)
+
+Run oleid against the files within the malware directory. Which file displays the Author information as 'jonhn'?
+
+	****sample5.xls**** (olvba sample5.xls)				(Move all malware files into /home/iml-user/
+
+
+
+
+
+
+
+
+	

